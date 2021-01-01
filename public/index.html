@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>WebXR AVR Assignment</title>
+	<script src="https://aframe.io/releases/1.1.0/aframe.js"></script>
+	<script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.js"></script>
+	<script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.js"></script>
+</head>
+
+<body>
+	<a-scene stats renderer="colorManagement: true">
+		<!-- Assets -->
+		<a-assets>
+			<a-asset-item id="gun-asset" src="/models/gun.gltf"></a-asset-item>
+		</a-assets>
+
+		<a-entity id="environment"
+			environment="shadow: true; fog: 0.8; groundColor: #233828; groundColor2: #59764e; groundTexture: walkernoise; playArea: 1.2; groundYScale: 12; dressing: stones; dressingAmount: 30; dressingColor: #404039; dressingScale: 2.2">
+		</a-entity>
+		<a-box shadow position="-1 1.5 -3" rotation="0 45 0" color="#4CC3D9"
+			event-set__enter="_event: mouseenter; color: #8FF7FF" event-set__leave="_event: mouseleave; color: #4CC3D9">
+		</a-box>
+		<a-gltf-model id="gun-model" shadow src="#gun-asset" position="1 1 -2" rotation="0 -90 0" scale="0.2 0.2 0.2">
+		</a-gltf-model>
+
+		<!-- Camera rig -->
+		<a-entity id="rig" position="0 0 0">
+			<a-entity camera look-controls wasd-controls position="0 1.6 0">
+				<a-cursor></a-cursor>
+			</a-entity>
+		</a-entity>
+	</a-scene>
+</body>
+
+</html>
