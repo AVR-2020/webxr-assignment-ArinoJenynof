@@ -17,24 +17,42 @@
 		<!-- Assets -->
 		<a-assets>
 			<a-asset-item id="gun" src="/models/gun.gltf"></a-asset-item>
+			<a-asset-item id="house1" src="/models/house1.gltf"></a-asset-item>
+			<a-asset-item id="house2" src="/models/house2.gltf"></a-asset-item>
+			<a-asset-item id="house3" src="/models/house3.gltf"></a-asset-item>
 		</a-assets>
 
 		<a-entity id="environment"
 			environment="shadow: true; fog: 0.8; groundColor: #233828; groundColor2: #59764e; groundTexture: walkernoise; playArea: 1.2; groundYScale: 12; dressing: stones; dressingAmount: 30; dressingColor: #404039; dressingScale: 2.2">
 		</a-entity>
+
 		<a-plane rotation="-90 0 0" height="1000" width="1000" visible="false" static-body></a-plane>
-		<a-box shadow position="-1 1.5 -3" rotation="0 45 0" color="#4CC3D9"
+		
+		<a-box shadow position="-1 6 -3" rotation="0 45 0" color="#4CC3D9"
 			event-set__enter="_event: mouseenter; color: #8FF7FF" event-set__leave="_event: mouseleave; color: #4CC3D9"
 			dynamic-body>
 		</a-box>
 
-		<a-cone position="-7 3 -7" rotation="0 0 180" checkpoint="offset: 0 -3 0" color="yellow"></a-cone>
-		<a-cone position="0 3 0" rotation="0 0 180" checkpoint="offset: 0 -3 0" color="yellow"></a-cone>
+		<a-gltf-model id="house1-model" src="#house1" scale="0.09 0.09 0.09" position="-5.7 -0.045 -21" rotation="0 -90 0"
+			static-body="shape: none" shape__main="shape: box; halfExtents: 37 42 20; offset: 5 0 3">
+		</a-gltf-model>
+		<a-gltf-model id="house2-model" src="#house2" scale="1.2 1.2 1.2" position="6 -0.145 -20" rotation="0 -90 0"
+			static-body="shape: node" shape__main="shape: box; halfExtents: 50 100 30">
+		</a-gltf-model>
+
+		<a-cone position="-7 3 -7" rotation="0 0 180" checkpoint="offset: 0 -3 0" color="yellow"
+			animation="property: position; to: -7 4 -7; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
+			geometry="radiusBottom: 0.4">
+		</a-cone>
+		<a-cone position="0 3 0" rotation="0 0 180" checkpoint="offset: 0 -3 0" color="yellow"
+			animation="property: position; to: 0 4 0; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
+			geometry="radiusBottom: 0.4">
+		</a-cone>
 
 		<!-- Camera rig -->
 		<a-entity id="rig" movement-controls="controls: checkpoint"
 			checkpoint-controls="mode: animate; animateSpeed: 10.0" position="0 0 0">
-			<a-camera position="0 1.6 0" look-controls="pointerLockEnabled: true" wasd-controls="enabled: false">
+			<a-camera position="0 1.6 0" look-controls="pointerLockEnabled: true">
 				<a-cursor></a-cursor>
 				<a-gltf-model id="gun-model" shadow src="#gun" position="0.376 -0.407 -0.390" rotation="-0.9 180 0"
 					scale="0.2 0.2 0.2">
