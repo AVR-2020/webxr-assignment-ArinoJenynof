@@ -8,30 +8,38 @@
 	<script src="https://aframe.io/releases/1.1.0/aframe.js"></script>
 	<script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.js"></script>
 	<script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.js"></script>
 </head>
 
 <body>
-	<a-scene stats renderer="colorManagement: true">
+	<a-scene stats renderer="colorManagement: true" physics="debug: true">
 		<!-- Assets -->
 		<a-assets>
-			<a-asset-item id="gun-asset" src="/models/gun.gltf"></a-asset-item>
+			<a-asset-item id="gun" src="/models/gun.gltf"></a-asset-item>
 		</a-assets>
 
 		<a-entity id="environment"
 			environment="shadow: true; fog: 0.8; groundColor: #233828; groundColor2: #59764e; groundTexture: walkernoise; playArea: 1.2; groundYScale: 12; dressing: stones; dressingAmount: 30; dressingColor: #404039; dressingScale: 2.2">
 		</a-entity>
+		<a-plane rotation="-90 0 0" height="1000" width="1000" visible="false" static-body></a-plane>
 		<a-box shadow position="-1 1.5 -3" rotation="0 45 0" color="#4CC3D9"
-			event-set__enter="_event: mouseenter; color: #8FF7FF" event-set__leave="_event: mouseleave; color: #4CC3D9">
+			event-set__enter="_event: mouseenter; color: #8FF7FF" event-set__leave="_event: mouseleave; color: #4CC3D9"
+			dynamic-body>
 		</a-box>
-		<a-gltf-model id="gun-model" shadow src="#gun-asset" position="1 1 -2" rotation="0 -90 0" scale="0.2 0.2 0.2">
-		</a-gltf-model>
+
+		<a-cone position="-7 3 -7" rotation="0 0 180" checkpoint="offset: 0 -3 0" color="yellow"></a-cone>
+		<a-cone position="0 3 0" rotation="0 0 180" checkpoint="offset: 0 -3 0" color="yellow"></a-cone>
 
 		<!-- Camera rig -->
-		<a-entity id="rig" position="0 0 0">
-			<a-entity camera look-controls wasd-controls position="0 1.6 0">
+		<a-entity id="rig" movement-controls="controls: checkpoint"
+			checkpoint-controls="mode: animate; animateSpeed: 10.0" position="0 0 0">
+			<a-camera position="0 1.6 0" look-controls="pointerLockEnabled: true" wasd-controls="enabled: false">
 				<a-cursor></a-cursor>
-			</a-entity>
+				<a-gltf-model id="gun-model" shadow src="#gun" position="0.376 -0.407 -0.390" rotation="-0.9 180 0"
+					scale="0.2 0.2 0.2">
+				</a-gltf-model>
+			</a-camera>
 		</a-entity>
 	</a-scene>
 </body>
