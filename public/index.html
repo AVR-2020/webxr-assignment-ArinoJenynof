@@ -16,9 +16,10 @@
 	<a-scene stats renderer="colorManagement: true" physics="debug: true">
 		<!-- Assets -->
 		<a-assets>
-			<a-asset-item id="gun" src="/models/gun.gltf"></a-asset-item>
-			<a-asset-item id="house1" src="/models/house1.gltf"></a-asset-item>
-			<a-asset-item id="house2" src="/models/house2.gltf"></a-asset-item>
+			<a-asset-item id="gun" src="/models/low-poly-gun/scene.gltf"></a-asset-item>
+			<a-asset-item id="house1" src="/models/low-poly-house/scene.gltf"></a-asset-item>
+			<a-asset-item id="house2" src="/models/modern-house-low-poly/scene.gltf"></a-asset-item>
+			<a-asset-item id="town-hall" src="/models/low-poly-town-hall/scene.gltf"></a-asset-item>
 			<img id="easter-egg" src="/textures/saya-ingin-meninggal-please.jpg">
 		</a-assets>
 
@@ -33,23 +34,22 @@
 			dynamic-body>
 		</a-box>
 
-		<a-gltf-model id="house1-model" src="#house1" scale="0.09 0.09 0.09" position="-5.7 -0.045 -21" rotation="0 -90 0"
-			static-body="shape: none" shape__main="shape: box; halfExtents: 37 42 20; offset: 5 0 3">
-		</a-gltf-model>
-		<a-gltf-model id="house2-model" src="#house2" scale="1.2 1.2 1.2" position="6 -0.145 -20" rotation="0 -90 0"
-			static-body="shape: node" shape__main="shape: box; halfExtents: 50 100 30">
-		</a-gltf-model>
+		<a-gltf-model id="house1-model" src="#house1" scale="0.09 0.09 0.09" position="-9.83603 -0.045 1.98709" static-body></a-gltf-model>
+		<a-gltf-model id="house2-model" src="#house2" scale="1.2 1.2 1.2" static-body position="-10.30975 -0.145 -14.51459"></a-gltf-model>
+		<a-gltf-model id="town-hall-model" src="#town-hall" position="12.68705 0 -15.50369"></a-gltf-model>
 
-		<a-cone position="-7 3 -7" rotation="0 0 180" checkpoint="offset: 0 -3 0" color="yellow"
-			animation="property: position; to: -7 4 -7; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
+		<a-cone position="-5.122 6 -17.822" rotation="0 0 180" color="yellow"
+			animation="property: position; to: -5.122 7 -17.822; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
 			geometry="radiusBottom: 0.4">
 		</a-cone>
-		<a-cone position="0 3 0" rotation="0 0 180" checkpoint="offset: 0 -3 0" color="yellow"
-			animation="property: position; to: 0 4 0; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
+		<a-cylinder position="-5.122 6.5 -17.822" checkpoint="offset: 0 -3 0" visible="false" radius="0.4"></a-cylinder>
+		<a-cone position="-2.37728 3 4.26845" rotation="0 0 180" color="yellow"
+			animation="property: position; to: -2.37728 4 4.26845; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
 			geometry="radiusBottom: 0.4">
 		</a-cone>
+		<a-cylinder position="-2.37728 3.5 4.26845" checkpoint="offset: 0 -3 0" visible="false" radius="0.4"></a-cylinder>
 
-		<a-plane id="smoothie" src="#easter-egg" rotation="0 0 0" position="1.139 1.429 -22.494" height="2" width="2"></a-plane>
+		<a-plane id="smoothie" src="#easter-egg" rotation="0 90 0" position="-12.16807 1.22755 -9.70061" height="2" width="2"></a-plane>
 
 		<!-- Camera rig -->
 		<a-entity id="rig" movement-controls="controls: checkpoint"
