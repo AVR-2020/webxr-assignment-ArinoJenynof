@@ -19,7 +19,7 @@
 			<a-asset-item id="gun" src="/models/gun.gltf"></a-asset-item>
 			<a-asset-item id="house1" src="/models/house1.gltf"></a-asset-item>
 			<a-asset-item id="house2" src="/models/house2.gltf"></a-asset-item>
-			<a-asset-item id="house3" src="/models/house3.gltf"></a-asset-item>
+			<img id="easter-egg" src="/textures/saya-ingin-meninggal-please.jpg">
 		</a-assets>
 
 		<a-entity id="environment"
@@ -48,6 +48,8 @@
 			animation="property: position; to: 0 4 0; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
 			geometry="radiusBottom: 0.4">
 		</a-cone>
+
+		<a-plane id="smoothie" src="#easter-egg" rotation="0 0 0" position="1.139 1.429 -22.494" height="2" width="2"></a-plane>
 
 		<!-- Camera rig -->
 		<a-entity id="rig" movement-controls="controls: checkpoint"
