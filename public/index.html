@@ -11,6 +11,15 @@
 	<script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.js"></script>
 	<script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.js"></script>
 	<script type="module">
+		function randInt(min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min) + min);
+		}
+		function randReal(min, max) {
+			return Math.random() * (max - min) + min;
+		}
+
 		let score = 0;
 		AFRAME.registerComponent("enemy", {
 			init: function() {
@@ -24,44 +33,42 @@
 			}
 		});
 		AFRAME.registerComponent("spawner", {
+			schema: {
+				maxPool: { default: 3 },
+				posJitter: { default: [5, 5] },
+				timeJitter: { default: [-2000, 2000] }
+			},
 			init: function() {
-				const maxEnemies = 10;
+				const maxPool = this.data.maxPool;
+				const posJitter = this.data.posJitter;
+				const timeJitter = this.data.timeJitter;
 				let currentEnemies = 0;
-				const spawnCoord = ["0", "0", "-2"];
 				const spawnEnemies = () => {
+					const pos = [
+						randReal(0, posJitter[0]),
+						0,
+						randReal(0, posJitter[1])
+					];
 					const enemy = document.createElement("a-gltf-model");
 					enemy.setAttribute("data-clickable", "");
+					enemy.setAttribute("enemy", "");
 					enemy.setAttribute("src", "#target");
-					enemy.setAttribute("position", spawnCoord.join(" "));
+					enemy.setAttribute("position", pos.join(" "));
 					enemy.setAttribute("scale", "0.08 0.08 0.08");
+					enemy.setAttribute("rotation", "0 0 0");
 					this.el.appendChild(enemy);
-					let z = parseInt(spawnCoord[2], 10);
-					z--;
-					spawnCoord[2] = z.toString();
 					currentEnemies++;
-					if (currentEnemies < maxEnemies) {
-						console.log(`${currentEnemies} < ${maxEnemies}, continuing...`);
-						setTimeout(spawnEnemies, 2000);
+					if (currentEnemies < maxPool) {
+						console.log(`${currentEnemies} < ${maxPool}, continuing...`);
+						setTimeout(spawnEnemies, 3000 + randInt(timeJitter[0], timeJitter[1]));
 					}
 				}
 				spawnEnemies();
+			},
+			update: function () {
+				console.log("reee");
 			}
-		})
-		// const maxEnemies = 25;
-		// let currentEnemies = 0;
-		// const scene = document.querySelector("a-scene");
-		// const spawnCoord = ["0", "0", "0"];
-		// const enemy = document.createElement("a-gltf-model");
-		// enemy.setAttribute("data-clickable", "");
-		// enemy.setAttribute("position", spawnCoord.join(" "));
-		// enemy.setAttribute("scale", "0.08 0.08 0.8");
-		// const spawnEnemies = () => {
-		// 	scene.appendChild(enemy);
-		// 	let z = parseInt(spawnCoord[2], 10);
-		// 	z++;
-		// 	spawnCoord[2] = z.toString();
-		// }
-		// if (scene.hasLoaded)
+		});
 	</script>
 </head>
 
@@ -87,9 +94,9 @@
 			environment="shadow: true; fog: 0.8; groundColor: #233828; groundColor2: #59764e; groundTexture: walkernoise; playArea: 1.2; groundYScale: 12; dressing: stones; dressingAmount: 30; dressingColor: #404039; dressingScale: 2.2">
 		</a-entity>
 
-		<a-entity spawner position="0 0 0" visible="true">
-			<!-- <a-gltf-model position="0 0 0" scale="0.08 0.08 0.08" src="#target"></a-gltf-model> -->
-		</a-entity>
+		<a-box spawner position="-11.985 0 -0.777" opacity="0" rotation="0 90 0"></a-box>
+		<a-box spawner position="-1.172 0 -16.551" opacity="0"></a-box>
+		<a-box spawner position="6.180 0 -14.962" opacity="0" rotation="0 -90 0"></a-box>
 
 		<!-- Hack for solid ground -->
 		<a-plane rotation="-90 0 0" height="1000" width="1000" visible="false" static-body></a-plane>
@@ -151,7 +158,7 @@
 				<a-gltf-model shadow src="#gun" position="0.376 -0.407 -0.390" rotation="-0.9 180 0"
 					scale="0.2 0.2 0.2">
 				</a-gltf-model>
-				<a-plane id="score-hud" position="0.630 0.322 -0.497" rotation="0 0 10" height="0.1" width="0.23" color="#141414" opacity="0.800">
+				<a-plane id="score-hud" position="0.630 0.322 -0.497" rotation="0 0 7" height="0.1" width="0.23" color="#141414" opacity="0.800">
 					<a-text id="score-hud-text" position="0.099 0.003 0" scale="0.2 0.2 0.2" value="Score\n0" align="right"></a-text>
 				</a-plane>	
 			</a-camera>
