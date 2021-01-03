@@ -10,6 +10,20 @@
 	<script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.js"></script>
 	<script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.js"></script>
+	<script type="module">
+		let score = 0;
+		AFRAME.registerComponent("enemy", {
+			init: function() {
+				const scoreNode = document.querySelector("#score-hud-text");
+				this.el.addEventListener("click", (evt) => {
+					console.log(evt.detail.intersection);
+					this.el.parentNode.removeChild(this.el);
+					score++;
+					scoreNode.setAttribute("value", `Score\n${score}`);
+				});
+			}
+		});
+	</script>
 </head>
 
 <body>
@@ -23,6 +37,9 @@
 			<a-asset-item id="barrier-1" src="/models/low-poly-road-barrier/scene.gltf"></a-asset-item>
 			<a-asset-item id="barrier-2" src="/models/lowpoly-concrete-barrier/scene.gltf"></a-asset-item>
 			<a-asset-item id="house-3" src="/models/suburb-house-1/scene.gltf"></a-asset-item>
+			<a-asset-item id="plant-1" src="/models/potted-plant-1/scene.gltf"></a-asset-item>
+			<a-asset-item id="plant-2" src="/models/potted-plant-2/scene.gltf"></a-asset-item>
+			<a-asset-item id="target" src="/models/target/scene.glb"></a-asset-item>
 			<img id="easter-egg" src="/textures/saya-ingin-meninggal-please.jpg">
 			<img id="road" src="/textures/road.jpg">
 		</a-assets>
@@ -31,7 +48,10 @@
 			environment="shadow: true; fog: 0.8; groundColor: #233828; groundColor2: #59764e; groundTexture: walkernoise; playArea: 1.2; groundYScale: 12; dressing: stones; dressingAmount: 30; dressingColor: #404039; dressingScale: 2.2">
 		</a-entity>
 
+		<!-- Hack for solid ground -->
 		<a-plane rotation="-90 0 0" height="1000" width="1000" visible="false" static-body></a-plane>
+		
+		<!-- Road -->
 		<a-plane height="25" width="10" src="#road" rotation="-90 0 0" material="repeat: 2 4" position="2.60568 0.075 -6.99873"></a-plane>
 		<a-plane src="#road" material="" geometry="height: 7; width: 12" rotation="-90 0 0" material="repeat: 3 3" position="-8.38874 0.075 -3.16591"></a-plane>
 		<a-plane src="#road" rotation="-90 0 0" material="repeat: 3 1" geometry="height: 4; width: 10" position="12.58688 0.075 -7.75841"></a-plane>
@@ -39,21 +59,22 @@
 		<!-- Building -->
 		<a-gltf-model class="building" src="#house-1" scale="0.09 0.09 0.09" position="-9.83603 -0.045 1.98709"></a-gltf-model>
 		<a-gltf-model class="building" src="#house-2" scale="1.2 1.2 1.2" position="-10.30975 -0.145 -14.51459"></a-gltf-model>
-		<a-gltf-model class="building" src="#town-hall" position="12.68705 0 -15.50369" static-body></a-gltf-model>
-		<a-gltf-model class="building" src="#house-3" static-body rotation="0 -90 0" position="13.433 0 -1.250" scale="2.2 2.2 2.2"></a-gltf-model>
+		<a-gltf-model class="building" src="#town-hall" position="12.68705 0 -15.50369"></a-gltf-model>
+		<a-gltf-model class="building" src="#house-3" rotation="0 -90 0" position="13.433 0 -0.486" scale="2.2 2.2 2.2"></a-gltf-model>
 
 		<!-- Decoration -->
-		<a-gltf-model class="decoration" src="tree-decor-1"></a-gltf-model>
+		<a-gltf-model class="decoration" src="#plant-1" position="-3.767 -0.707 4.338"></a-gltf-model>
+		<a-gltf-model class="decoration" src="#plant-2" position="-4.977 -0.007 0.883" scale="0.001 0.001 0.001"></a-gltf-model>
 
 		<!-- Boundary barrier -->
 		<a-gltf-model class="barrier" src="#barrier-1" position="-12.934 0.359 -1.489"></a-gltf-model>
 		<a-gltf-model class="barrier" src="#barrier-1" position="-12.934 0.359 -4.808"></a-gltf-model>
 		<a-gltf-model class="barrier" src="#barrier-2" scale="0.01 0.01 0.01" position="-0.51064 1.70309 -17.92441"></a-gltf-model>
-		<a-gltf-model class="barrier" src="#barrier-2" scale="0.01 0.01 0.01" position="2.074 1.70309 -17.92441"></a-gltf-model>
-		<a-gltf-model class="barrier" src="#barrier-2" scale="0.01 0.01 0.01" position="4.748 1.70309 -17.92441"></a-gltf-model>
-		<a-gltf-model class="barrier" src="#barrier-2" scale="0.01 0.01 0.01" position="-0.51064 1.70309 4.92441"></a-gltf-model>
-		<a-gltf-model class="barrier" src="#barrier-2" scale="0.01 0.01 0.01" position="2.074 1.70309 4.92441"></a-gltf-model>
-		<a-gltf-model class="barrier" src="#barrier-2" scale="0.01 0.01 0.01" position="4.748 1.70309 4.92441"></a-gltf-model>
+		<a-gltf-model class="barrier" src="#barrier-2" scale="0.01 0.01 0.01" position="2.494 1.70309 -17.92441"></a-gltf-model>
+		<a-gltf-model class="barrier" src="#barrier-2" scale="0.01 0.01 0.01" position="5.437 1.70309 -17.92441"></a-gltf-model>
+		<a-gltf-model class="barrier" src="#barrier-2" scale="0.015 0.01 0.01" position="-0.511 1.70309 4.92441"></a-gltf-model>
+		<a-gltf-model class="barrier" src="#barrier-2" scale="0.015 0.01 0.01" position="2.629 1.70309 4.92441"></a-gltf-model>
+		<a-gltf-model class="barrier" src="#barrier-2" scale="0.015 0.01 0.01" position="5.753 1.70309 4.92441"></a-gltf-model>
 		<a-gltf-model class="barrier" src="#barrier-1" position="16.79716 0.359 -7.76157"></a-gltf-model>
 		
 		<!-- Checkpoint -->
@@ -61,12 +82,17 @@
 			animation="property: position; to: -5.122 7 -17.822; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
 			geometry="radiusBottom: 0.4">
 		</a-cone>
-		<a-cylinder position="-5.122 6.5 -17.822" checkpoint="offset: 0 -3 0" visible="false" radius="0.4"></a-cylinder>
+		<a-cylinder data-clickable position="-5.122 6.5 -17.822" checkpoint="offset: 0 -3 0" visible="false" radius="0.4"></a-cylinder>
 		<a-cone position="-4.152 3 2.510" rotation="0 0 180" color="yellow"
 			animation="property: position; to: -4.152 4 2.510; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
 			geometry="radiusBottom: 0.4">
 		</a-cone>
-		<a-cylinder position="-4.152 3.5 2.510" checkpoint="offset: 0 -3 0" visible="false" radius="0.4"></a-cylinder>
+		<a-cylinder data-clickable position="-4.152 3.5 2.510" checkpoint="offset: 0 -3 0" visible="false" radius="0.4"></a-cylinder>
+		<a-cone position="-10.356 6.070 -6.727" rotation="0 0 180" color="yellow"
+			animation="property: position; to: -10.356 7.070 -6.727; dur: 2000; dir: alternate; easing: easeInOutSine; loop: true"
+			geometry="radiusBottom: 0.4">
+		</a-cone>
+		<a-cylinder data-clickable position="-10.356 6.570 -6.727" checkpoint="offset: 0 -3 0" visible="false" radius="0.4"></a-cylinder>
 
 		<!-- Blabla something something -->
 		<a-plane id="smoothie" src="#easter-egg" rotation="0 90 0" position="-12.16807 1.22755 -9.70061" height="2" width="2"></a-plane>
@@ -75,10 +101,13 @@
 		<a-entity id="rig" movement-controls="controls: checkpoint"
 			checkpoint-controls="mode: animate; animateSpeed: 10.0" position="0 0 0">
 			<a-camera position="0 1.6 0" look-controls="pointerLockEnabled: true">
-				<a-cursor></a-cursor>
+				<a-cursor raycaster="objects: [data-clickable]"></a-cursor>
 				<a-gltf-model shadow src="#gun" position="0.376 -0.407 -0.390" rotation="-0.9 180 0"
 					scale="0.2 0.2 0.2">
 				</a-gltf-model>
+				<a-plane id="score-hud" position="0.558 0.322 -0.497" rotation="0 0 10" height="0.1" width="0.23" color="#141414" opacity="0.800">
+					<a-text id="score-hud-text" value="Score\n0" align="right"></a-text>
+				</a-plane>	
 			</a-camera>
 		</a-entity>
 	</a-scene>
