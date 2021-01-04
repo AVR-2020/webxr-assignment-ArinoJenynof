@@ -24,8 +24,8 @@
 		AFRAME.registerComponent("enemy", {
 			init: function() {
 				this.el.addEventListener("click", (evt) => {
-					console.log(evt.detail.intersection);
-					this.el.sceneEl.emit("killed", { emitter: this.el });
+					this.el.sceneEl.emit("killed");
+					this.el.parentNode.emit("killed", {}, false);
 					this.el.parentNode.removeChild(this.el);
 				});
 			}
@@ -42,7 +42,7 @@
 		});
 		AFRAME.registerComponent("spawner", {
 			schema: {
-				maxPool: { default: 3 },
+				maxPool: { default: 5 },
 				posJitter: { default: [5, 5] },
 				timeJitter: { default: [-2000, 2000] }
 			},
@@ -50,6 +50,7 @@
 				const maxPool = this.data.maxPool;
 				const posJitter = this.data.posJitter;
 				const timeJitter = this.data.timeJitter;
+				let timeoutID;
 				let currentEnemies = 0;
 				const spawnEnemies = () => {
 					const pos = [
@@ -57,31 +58,44 @@
 						0,
 						randReal(0, posJitter[1])
 					];
-					const enemy = document.createElement("a-gltf-model");
-					enemy.setAttribute("data-clickable", "");
-					enemy.setAttribute("enemy", "");
-					enemy.setAttribute("src", "#target");
-					enemy.setAttribute("position", pos.join(" "));
-					enemy.setAttribute("scale", "0.08 0.08 0.08");
-					enemy.setAttribute("rotation", "0 0 0");
-					this.el.appendChild(enemy);
-					currentEnemies++;
 					if (currentEnemies < maxPool) {
-						setTimeout(spawnEnemies, 3000 + randInt(timeJitter[0], timeJitter[1]));
+						const enemy = document.createElement("a-gltf-model");
+						enemy.setAttribute("data-clickable", "");
+						enemy.setAttribute("enemy", "");
+						enemy.setAttribute("src", "#target");
+						enemy.setAttribute("position", pos.join(" "));
+						enemy.setAttribute("scale", "0.08 0.08 0.08");
+						enemy.setAttribute("rotation", "0 0 0");
+						this.el.appendChild(enemy);
+						currentEnemies++;
 					}
+					timeoutID = setTimeout(spawnEnemies, 3000 + randInt(timeJitter[0], timeJitter[1]));
 				}
-				spawnEnemies();
+				timeoutID = setTimeout(spawnEnemies, 10000);
+				this.el.addEventListener("killed", (evt) => {
+					currentEnemies--;
+				});
+				this.el.sceneEl.addEventListener("finish", (evt) => {
+					while (this.el.hasChildNodes()) {
+						this.el.removeChild(this.el.lastChild);
+					}
+					this.el.removeAttribute("spawner");
+					clearTimeout(timeoutID);
+				});
 			}
 		});
 		AFRAME.registerComponent("countdown", {
-			schema: { timer: { type: "int", default: 60000 } },
+			schema: { timer: { type: "int", default: 70000 }, start: { type: "int", default: 0 } },
 			init: function() {
-				this.el.setAttribute("value", `Time\n${(this.data.timer / 1000).toFixed(2)} `);
+				this.el.setAttribute("value", `Time\n${(this.data.timer / 1000).toFixed(2)}`);
 			},
 			tick: function(time, timeDelta) {
 				if (this.data.timer > 0) {
 					this.data.timer -= timeDelta;
-					this.el.setAttribute("value", `Time\n${(this.data.timer / 1000).toFixed(2)} `);
+					this.el.setAttribute("value", `Time\n${(this.data.timer / 1000).toFixed(2)}`);
+				} else {
+					this.el.sceneEl.emit("finish");
+					this.el.removeAttribute("countdown");
 				}
 			}
 		});
@@ -170,7 +184,7 @@
 		<!-- Camera rig -->
 		<a-entity id="rig" movement-controls="controls: checkpoint"
 			checkpoint-controls="mode: animate; animateSpeed: 10.0" position="0 0 0">
-			<a-camera position="0 1.6 0" look-controls="pointerLockEnabled: true">
+			<a-camera position="0 1.6 0" look-controls="pointerLockEnabled: true" wasd-controls="enable: false">
 				<a-cursor raycaster="objects: [data-clickable]"></a-cursor>
 				<a-gltf-model shadow src="#gun" position="0.376 -0.407 -0.390" rotation="-0.9 180 0"
 					scale="0.2 0.2 0.2">
