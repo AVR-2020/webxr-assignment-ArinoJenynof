@@ -10,6 +10,7 @@
 	<script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.js"></script>
 	<script src="https://unpkg.com/aframe-event-set-component@5.0.0/dist/aframe-event-set-component.js"></script>
+	<script src="https://unpkg.com/aframe-proxy-event-component/dist/aframe-proxy-event-component.min.js"></script>
 	<script type="module">
 		function randInt(min, max) {
 			min = Math.ceil(min);
@@ -20,15 +21,22 @@
 			return Math.random() * (max - min) + min;
 		}
 
-		let score = 0;
 		AFRAME.registerComponent("enemy", {
 			init: function() {
-				const scoreNode = document.querySelector("#score-hud-text");
 				this.el.addEventListener("click", (evt) => {
 					console.log(evt.detail.intersection);
+					this.el.sceneEl.emit("killed", { emitter: this.el });
 					this.el.parentNode.removeChild(this.el);
-					score++;
-					scoreNode.setAttribute("value", `Score\n${score}`);
+				});
+			}
+		});
+		AFRAME.registerComponent("enemy-listener", {
+			schema: { score: { default: 0 } },
+			init: function() {
+				this.el.sceneEl.addEventListener("killed", (evt) => {
+					console.log("killed");
+					this.data.score++;
+					this.el.setAttribute("value", `Score\n${this.data.score}`);
 				});
 			}
 		});
@@ -36,7 +44,7 @@
 			schema: {
 				maxPool: { default: 3 },
 				posJitter: { default: [5, 5] },
-				timeJitter: { default: [-5000, 5000] }
+				timeJitter: { default: [-2000, 2000] }
 			},
 			init: function() {
 				const maxPool = this.data.maxPool;
@@ -68,14 +76,12 @@
 		AFRAME.registerComponent("countdown", {
 			schema: { timer: { type: "int", default: 60000 } },
 			init: function() {
-				console.log(this.data.timer);
-				this.el.setAttribute("value", "Time\n" + (this.data.timer / 1000).toFixed(1));
+				this.el.setAttribute("value", `Time\n${(this.data.timer / 1000).toFixed(2)} `);
 			},
 			tick: function(time, timeDelta) {
 				if (this.data.timer > 0) {
-					console.log(this.data.timer);
 					this.data.timer -= timeDelta;
-					this.el.setAttribute("value", "Time\n" + (this.data.timer / 1000).toFixed(1));
+					this.el.setAttribute("value", `Time\n${(this.data.timer / 1000).toFixed(2)} `);
 				}
 			}
 		});
@@ -105,9 +111,9 @@
 		</a-entity>
 
 		<!-- Enemy spawner -->
-		<!-- <a-box spawner position="-11.985 0 -0.777" opacity="0" rotation="0 90 0"></a-box>
+		<a-box spawner position="-11.985 0 -0.777" opacity="0" rotation="0 90 0"></a-box>
 		<a-box spawner position="-1.956 0 -17.383" opacity="0"></a-box>
-		<a-box spawner position="11.129 0 -10.384" opacity="0" rotation="0 -90 0"></a-box> -->
+		<a-box spawner position="11.129 0 -10.384" opacity="0" rotation="0 -90 0"></a-box>
 
 		<!-- Hack for solid ground -->
 		<a-plane rotation="-90 0 0" height="1000" width="1000" visible="false" static-body></a-plane>
@@ -170,7 +176,7 @@
 					scale="0.2 0.2 0.2">
 				</a-gltf-model>
 				<a-plane id="score-hud" position="0.883 0.322 -0.654" rotation="0 0 7" height="0.1" width="0.23" color="#141414" opacity="0.800">
-					<a-text id="score-hud-text" position="0.099 0.003 0" scale="0.2 0.2 0.2" value="Score\n0" align="right"></a-text>
+					<a-text enemy-listener id="score-hud-text" position="0.099 0.003 0" scale="0.2 0.2 0.2" value="Score\n0" align="right"></a-text>
 				</a-plane>
 				<a-plane id="timer-hud" position="0.883 -0.222 -0.654" rotation="0 0 -7" height="0.1" width="0.23" color="#141414" opacity="0.800">
 					<a-text countdown id="timer-hud-text" scale="0.2 0.2 0.2"></a-text>
