@@ -36,7 +36,7 @@
 			schema: {
 				maxPool: { default: 3 },
 				posJitter: { default: [5, 5] },
-				timeJitter: { default: [-2000, 2000] }
+				timeJitter: { default: [-5000, 5000] }
 			},
 			init: function() {
 				const maxPool = this.data.maxPool;
@@ -59,14 +59,24 @@
 					this.el.appendChild(enemy);
 					currentEnemies++;
 					if (currentEnemies < maxPool) {
-						console.log(`${currentEnemies} < ${maxPool}, continuing...`);
 						setTimeout(spawnEnemies, 3000 + randInt(timeJitter[0], timeJitter[1]));
 					}
 				}
 				spawnEnemies();
+			}
+		});
+		AFRAME.registerComponent("countdown", {
+			schema: { timer: { type: "int", default: 60000 } },
+			init: function() {
+				console.log(this.data.timer);
+				this.el.setAttribute("value", "Time\n" + (this.data.timer / 1000).toFixed(1));
 			},
-			update: function () {
-				console.log("reee");
+			tick: function(time, timeDelta) {
+				if (this.data.timer > 0) {
+					console.log(this.data.timer);
+					this.data.timer -= timeDelta;
+					this.el.setAttribute("value", "Time\n" + (this.data.timer / 1000).toFixed(1));
+				}
 			}
 		});
 	</script>
@@ -94,9 +104,10 @@
 			environment="shadow: true; fog: 0.8; groundColor: #233828; groundColor2: #59764e; groundTexture: walkernoise; playArea: 1.2; groundYScale: 12; dressing: stones; dressingAmount: 30; dressingColor: #404039; dressingScale: 2.2">
 		</a-entity>
 
-		<a-box spawner position="-11.985 0 -0.777" opacity="0" rotation="0 90 0"></a-box>
-		<a-box spawner position="-1.172 0 -16.551" opacity="0"></a-box>
-		<a-box spawner position="6.180 0 -14.962" opacity="0" rotation="0 -90 0"></a-box>
+		<!-- Enemy spawner -->
+		<!-- <a-box spawner position="-11.985 0 -0.777" opacity="0" rotation="0 90 0"></a-box>
+		<a-box spawner position="-1.956 0 -17.383" opacity="0"></a-box>
+		<a-box spawner position="11.129 0 -10.384" opacity="0" rotation="0 -90 0"></a-box> -->
 
 		<!-- Hack for solid ground -->
 		<a-plane rotation="-90 0 0" height="1000" width="1000" visible="false" static-body></a-plane>
@@ -158,9 +169,12 @@
 				<a-gltf-model shadow src="#gun" position="0.376 -0.407 -0.390" rotation="-0.9 180 0"
 					scale="0.2 0.2 0.2">
 				</a-gltf-model>
-				<a-plane id="score-hud" position="0.630 0.322 -0.497" rotation="0 0 7" height="0.1" width="0.23" color="#141414" opacity="0.800">
+				<a-plane id="score-hud" position="0.883 0.322 -0.654" rotation="0 0 7" height="0.1" width="0.23" color="#141414" opacity="0.800">
 					<a-text id="score-hud-text" position="0.099 0.003 0" scale="0.2 0.2 0.2" value="Score\n0" align="right"></a-text>
-				</a-plane>	
+				</a-plane>
+				<a-plane id="timer-hud" position="0.883 -0.222 -0.654" rotation="0 0 -7" height="0.1" width="0.23" color="#141414" opacity="0.800">
+					<a-text countdown id="timer-hud-text" scale="0.2 0.2 0.2"></a-text>
+				</a-plane>
 			</a-camera>
 		</a-entity>
 	</a-scene>
